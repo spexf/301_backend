@@ -20,11 +20,11 @@ class Item extends Model
 
     public function submited_by()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'submit_id', 'id');
     }
 
     public function taked_by()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'take_id', 'id');
     }
 }
