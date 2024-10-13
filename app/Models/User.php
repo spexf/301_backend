@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\ItemStatus;
+use App\Enums\ItemType;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -51,11 +53,16 @@ class User extends Authenticatable
 
     public function found_item()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(Item::class)->where('type', ItemType::FOUND->value);
     }
 
     public function lost_item()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(Item::class)->where('type', ItemType::LOST->value);
+    }
+
+    public function taked_item()
+    {
+        return $this->hasMany(Item::class)->where('status', ItemStatus::TAKEN->value);
     }
 }
