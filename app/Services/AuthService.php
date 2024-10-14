@@ -26,15 +26,11 @@ class AuthService
             $data,
             [
                 'name' => 'required',
-                'nim' => 'numeric|unique:users,nim|required',
                 'email' => 'email|unique:users,email|required|regex:/^[\w\-\.]+@students\.polibatam\.ac\.id$/',
                 'password' => 'min:8|required',
             ],
             [
                 'name.required' => "Name field can't be empty",
-                'nim.required' => "NIM field can't be empty",
-                'nim.numeric' => 'NIM value not valid',
-                'nim.unique' => 'This NIM has been used',
                 'email.required' => "Email field can't be empty",
                 'email.email' => "Email field must be filled with email",
                 'email.unique' => 'This Email has been used',
@@ -79,7 +75,6 @@ class AuthService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
-                'nim' => $data['nim']
             ]);
 
             $user->assignRole('user');

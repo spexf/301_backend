@@ -37,4 +37,24 @@ class ItemController extends Controller
         $data = $this->itemApiService->getNotTakenItem();
         return $this->respondWithResource(true, 'not_taked_items', $data);
     }
+
+    public function storeItem(Request $request)
+    {
+        $validate = $this->itemApiService->validatePostItem($request->all());
+        if ($validate !== true) {
+            return $validate;
+        }
+        $imageNewName = time() . '.' . $request->image->extension();
+        $this->itemApiService->saveImage($request->image, $imageNewName, $request->type);
+        $this->itemApiService->storeItem([
+            'submit_id' => auth()->user()->id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'location' => $request->location,
+            'type' => $request->type,
+            'image' => $imageNewName
+        ]);
+
+
+    }
 }
