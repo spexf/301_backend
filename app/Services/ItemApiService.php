@@ -104,7 +104,6 @@ class ItemApiService
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
             return response()->json([
                 'message' => 'Data insertion failed'
             ], 500);
