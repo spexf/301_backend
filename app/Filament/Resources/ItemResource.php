@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ItemType;
 use Filament\Forms;
 use App\Models\Item;
 use Filament\Tables;
@@ -52,6 +53,11 @@ class ItemResource extends Resource
                     ->options(ItemStatus::class)
                     ->preload()
                     ->searchable(),
+                SelectFilter::make('type')
+                    ->optionsLimit(5)
+                    ->options(ItemType::class)
+                    ->preload()
+                    ->searchable(),
             ], layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
                 ViewAction::make()
@@ -81,7 +87,7 @@ class ItemResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->label('Submited By'),
-            TextColumn::make('title')
+            TextColumn::make('location')
                 ->searchable()
                 ->sortable(),
             TextColumn::make('type')->sortable()->searchable(),
@@ -91,7 +97,6 @@ class ItemResource extends Resource
                     true => 'verified',
                     false => 'not verified'
                 ]),
-            TextColumn::make('location')
         ];
     }
 

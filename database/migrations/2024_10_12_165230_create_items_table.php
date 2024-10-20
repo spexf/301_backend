@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->enum('type', ['lost', 'found']);
             $table->boolean('verified')->default(false);
             $table->enum('status', ['not taken', 'taken'])->default(ItemStatus::NOTTAKEN->value);
-            $table->string('title');
             $table->string('location');
             $table->string('description');
             $table->string('image');

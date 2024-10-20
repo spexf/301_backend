@@ -15,10 +15,13 @@ Route::post('/auth/register', [AuthController::class, 'register'])->name('regist
 Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
 
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:user,api'])->group(function () {
     Route::get('/items', [ItemController::class, 'getAllItems'])->name('get-items');
+    Route::get('/items/verified', [ItemController::class])->name('get-verified-items');
+    Route::get('/items/{filterType}/{filterStatus}/{filterTime}', [ItemController::class, 'getMyFilteredItem'])->name('get-my-filtered-items');
     Route::post('/items/create', [ItemController::class, 'storeItem'])->name('store-item');
+
     Route::get('/tesHit', function () {
-        return auth()->user();
+        return auth()->user()->getRoleNames();
     });
 });

@@ -56,14 +56,12 @@ class ItemApiService
         $validate = Validator::make(
             $data,
             [
-                'title' => 'required',
                 'description' => 'required',
                 'location' => 'required',
                 'type' => 'required',
                 'image' => 'required|image|mimes:jpeg,png,jpg'
             ],
             [
-                'title.required' => "Title can't be empty",
                 'description.required' => "Description can't be empty",
                 'location.required' => "Location can't be empty",
                 'type.required' => "Type can't be empty",

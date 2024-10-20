@@ -83,7 +83,7 @@ class AuthService
         } catch (\Exception $exception) {
             DB::rollBack();
             \Log::error('Registration error: ' . $exception->getMessage());
-            dd($exception->getMessage());
+            dd(vars: $exception->getMessage());
             return response()->json([
                 'message' => 'Register failed !'
             ], 500);
