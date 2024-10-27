@@ -17,6 +17,17 @@ class Item extends Model
         'type' => ItemType::class
     ];
 
+    protected $fillable = [
+        'description',
+        'image',
+        'location',
+        'type',
+        'status',
+        'submit_id',
+        'take_id',
+        'verified'
+    ];
+
 
     public function submited_by()
     {

@@ -9,14 +9,14 @@ use Filament\Support\Contracts\HasLabel;
 enum ItemType: string implements HasColor, HasIcon, HasLabel
 {
     case LOST = 'lost';
-    case FOUND = 'not taken';
+    case FOUND = 'found';
 
 
     public function getLabel(): ?string
     {
         return match ($this) {
             self::LOST => 'Lost',
-            self::FOUND => 'Not Taken',
+            self::FOUND => 'Found',
         };
     }
 
