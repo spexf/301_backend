@@ -34,4 +34,9 @@ class AuthController extends Controller
 
     }
 
+    public function authValidate()
+    {
+        return auth()->user();
+    }
+
 }
