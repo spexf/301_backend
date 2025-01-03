@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Enums\ItemStatus;
+use App\Http\Controllers\Controller;
+use App\Models\Item;
+use App\Services\TransactionService;
+use Illuminate\Http\Request;
+
+class TransactionController extends Controller
+{
+    public function __construct(protected TransactionService $transactionService)
+    {
+
+    }
+
+    public function storeTransactionItem(Request $request)
+    {
+
+        $chatImageNewName = time() . '.' . $request->chatImage->extension();
+        $transactionImageNewName = time() . '.' . $request->transactionImage->extension();
+        $this->transactionService->storeChatImage($request->chatImage, $chatImageNewName);
+        $this->transactionService->storeTransactionImage($request->transactionImage, $transactionImageNewName);
+        $item = Item::where('id', $request->item_id)->first();
+        $item->take_id = $request->user_id;
+        $item->status = ItemStatus::TAKEN->value;
+        $item->save();
+        $this->transactionService->storeTransaction([
+            'item_id' => $request->item_id,
+            'transaction_image' => $transactionImageNewName,
+            'chat_image' => $chatImageNewName,
+            'transaction_location' => $request->transaction_location
+        ]);
+
+
+    }
+}

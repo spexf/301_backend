@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Services\AuthService;
+use Auth;
 use Hash;
 use Validator;
 use App\Models\User;
@@ -36,7 +37,24 @@ class AuthController extends Controller
 
     public function authValidate()
     {
-        return auth()->user();
+        return auth()->user()->roles[0];
+    }
+
+    public function redirectLogin()
+    {
+        $user = auth()->user();
+        Auth::loginUsingId($user->id);
+        return redirect()->to('/admin');
+    }
+
+    public function logout()
+    {
+        auth()->user()->tokens->each(function ($token) {
+            $token->delete();
+        });
+        return response()->json([
+            'message' => 'Logout Success',
+        ], 200);
     }
 
 }

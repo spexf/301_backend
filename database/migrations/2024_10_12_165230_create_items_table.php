@@ -13,6 +13,7 @@ return new class extends Migration {
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->string('item');
             $table->foreignId('submit_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignId('take_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
             $table->enum('type', ['lost', 'found']);

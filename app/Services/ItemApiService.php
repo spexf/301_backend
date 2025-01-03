@@ -37,9 +37,9 @@ class ItemApiService
         return $this->getItem()->where('status', ItemStatus::NOTTAKEN->value)->get();
     }
 
-    public function getVerifiedItem(): Collection
+    public function getVerifiedItem($type): Collection
     {
-        return $this->getItem()->where('verified', true)->get();
+        return $this->getItem()->where('type', $type)->where('status', ItemStatus::NOTTAKEN->value)->where('verified', true)->get();
     }
     public function getNotVerifiedItem(): Collection
     {
@@ -56,18 +56,22 @@ class ItemApiService
         $validate = Validator::make(
             $data,
             [
+                'item' => 'required|max:25',
                 'description' => 'required',
                 'location' => 'required',
                 'type' => 'required',
-                'image' => 'required|image|mimes:jpeg,png,jpg'
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
             ],
             [
+                'item.required' => "Item Name can't be empty",
+                'item.max' => "Item Name max length is 25",
                 'description.required' => "Description can't be empty",
                 'location.required' => "Location can't be empty",
                 'type.required' => "Type can't be empty",
                 'image.required' => "Image can't be empty",
                 'image.image' => "Image must be an image",
-                'image.mimes' => "Image format not supported"
+                'image.mimes' => "Image format not supported",
+                'image.max' => 'Image maximum size is 2048KB'
             ]
         );
         if ($validate->fails()) {
@@ -76,6 +80,26 @@ class ItemApiService
         return true;
     }
 
+    public function getItemImages($type, $name)
+    {
+        // Assuming the image is stored in the 'public/images/{type}' directory
+        $imagePath = public_path('images/' . $type . '/' . $name);
+
+        if (file_exists($imagePath)) {
+            // Generate the URL to the image
+            $imageUrl = asset('images/' . $type . '/' . $name);
+
+            return response()->json([
+                'image_url' => $imageUrl
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Image not found'
+            ], 404);
+        }
+    }
+
+
     public function saveImage($image, $imageName, $type)
     {
         // $image is an image from the request, just like $request->image
@@ -83,7 +107,7 @@ class ItemApiService
             if ($type == 'lost') {
                 $save = $image->move(public_path('images/lost/'), $imageName);
             } else if ($type == 'found') {
-                $save = $image->move(public_path('images/lost/'), $imageName);
+                $save = $image->move(public_path('images/found/'), $imageName);
             }
             return true;
         } catch (\Exception $exception) {
@@ -105,6 +129,49 @@ class ItemApiService
             return response()->json([
                 'message' => 'Data insertion failed'
             ], 500);
+        }
+    }
+
+    public function changeStatus($id, $status)
+    {
+        $item = $this->getItem()->where('id', $id)->first();
+        DB::beginTransaction();
+        try {
+            $item->status = $status;
+            $item->save();
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return $exception;
+        }
+    }
+
+    public function verifyItem($id)
+    {
+        $item = $this->getItem()->find($id);
+        DB::beginTransaction();
+        try {
+            $item->verified = 1;
+            $item->save();
+            DB::commit();
+            return 'success';
+        } catch (\Exception $err) {
+            DB::rollBack();
+            throw $err;
+        }
+    }
+    public function cancelItem($id)
+    {
+        $item = $this->getItem()->find($id);
+        DB::beginTransaction();
+        try {
+            $item->verified = 2;
+            $item->save();
+            DB::commit();
+            return 'success';
+        } catch (\Exception $err) {
+            DB::rollBack();
+            throw $err;
         }
     }
 

@@ -74,6 +74,7 @@ class AuthService
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'contact' => $data['contact'],
                 'password' => Hash::make($data['password']),
             ]);
 
@@ -94,6 +95,9 @@ class AuthService
     {
         $user = User::where('email', $data['email'])->first();
         if ($user && Hash::check($data['password'], $user->password)) {
+            if ($user->roles[0] == 'admin') {
+                Auth::loginUsingId($user->id);
+            }
             return response()->json([
                 'message' => 'Login Success',
                 'user' => new UserResource($user),

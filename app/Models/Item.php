@@ -18,6 +18,7 @@ class Item extends Model
     ];
 
     protected $fillable = [
+        'item',
         'description',
         'image',
         'location',
@@ -37,5 +38,10 @@ class Item extends Model
     public function taked_by()
     {
         return $this->belongsTo(User::class, 'take_id', 'id');
+    }
+
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
     }
 }
