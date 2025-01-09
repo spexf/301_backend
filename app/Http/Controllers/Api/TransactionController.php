@@ -35,4 +35,26 @@ class TransactionController extends Controller
 
 
     }
+
+    public function getChatImages($image)
+    {
+        return $this->transactionService->getChatImages($image);
+    }
+
+    public function getTransactionImage($image)
+    {
+        return $this->transactionService->getTransactionImages($image);
+    }
+
+    public function getTransactions()
+    {
+        return $this->transactionService->getTransaction()->with('item')->get();
+    }
+
+    public function getTransaction($id)
+    {
+        return $this->transactionService->getTransaction()->with('item')->with('item.submited_by')->with('item.taked_by')->where('id', $id)->first();
+    }
+
+
 }

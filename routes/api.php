@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ItemController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 use App\Mail\sendEmail;
@@ -23,8 +24,11 @@ Route::post('sendMail', function () {
 Route::middleware(['auth:sanctum', 'role:admin,api'])->group(function () {
     // GET
     Route::get('/admin/items', [ItemController::class, 'getFrontEndData']);
+    Route::get('/admin/transactions', [TransactionController::class, 'getTransactions']);
+    Route::get('/admin/transactions/{id}', [TransactionController::class, 'getTransaction']);
     Route::get('/admin/items/{id}', [ItemController::class, 'getItemDetails']);
     Route::get('/admin/users', action: [UserController::class, 'getUser']);
+    Route::get('/admin/roles', [RoleController::class, 'index']);
     // PUT
     Route::put('/admin/items/{id}/{status}', [ItemController::class, 'changeStatus']);
     Route::put('/admin/users/{id}/ban', [UserController::class, 'banUser']);
@@ -40,7 +44,8 @@ Route::middleware(['auth:sanctum', 'role:admin,api'])->group(function () {
 Route::middleware(['auth:sanctum', 'role:user|admin,api'])->group(function () {
     // GET
 
-
+    Route::get('/transactions/images/{images}', [TransactionController::class, 'getTransactionImage']);
+    Route::get('/chats/images/{images}', [TransactionController::class, 'getChatImage']);
     Route::get('/items/details/{id}', [ItemController::class, 'getItemDetails']);
     Route::get('/items/images/{type}/{name}', [ItemController::class, 'getImage'])->name('get-item-image');
     Route::get('/items', [ItemController::class, 'getAllItems'])->name('get-items');
