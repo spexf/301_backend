@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Item extends Model
 {
     use HasFactory;
-
     protected $casts = [
         'status' => ItemStatus::class,
         'type' => ItemType::class

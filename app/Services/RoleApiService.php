@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RoleApiService
 {
+
+    public function getRole()
+    {
+        return Role::query();
+    }
     // Fungsi untuk mengambil semua role
     public function getAllRoles()
     {

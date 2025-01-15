@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\RoleApiService;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -17,13 +19,22 @@ class RoleController extends Controller
     }
 
     // Fungsi untuk mengambil semua role
+
     public function index()
     {
+
+        $role = $this->roleService->getAllRoles();
+        $admin = User::role('admin')->get(); // Memanggil service untuk mengambil semua role
+        $user = User::role('user')->get(); // Memanggil service untuk mengambil semua role
+        $banned = User::role('banned')->get(); // Memanggil service untuk mengambil semua role
+        $role[0]['user_count'] = count($admin);
+        $role[1]['user_count'] = count($user);
+        $role[2]['user_count'] = count($banned);
         try {
-            $roles = $this->roleService->getAllRoles(); // Memanggil service untuk mengambil semua role
-            return response()->json($roles, 200); // Mengembalikan response JSON dengan status 200
+            return response()->json($role, 200); // Mengembalikan response JSON dengan status 200
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error fetching roles'], 500);
+            return $e;
+            // return response()->json(['message' => 'Error fetching roles'], 500);
         }
     }
 
