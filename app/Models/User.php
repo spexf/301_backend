@@ -3,14 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\ItemStatus;
+use App\Enums\ItemType;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'contact'
     ];
 
     /**
@@ -33,6 +38,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $guard_name = 'api';
+
     /**
      * Get the attributes that should be cast.
      *
@@ -44,5 +51,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function found_item()
+    {
+        return $this->hasMany(Item::class)->where('type', ItemType::FOUND->value);
+    }
+
+    public function lost_item()
+    {
+        return $this->hasMany(Item::class)->where('type', ItemType::LOST->value);
+    }
+
+    public function taked_item()
+    {
+        return $this->hasMany(Item::class)->where('status', ItemStatus::TAKEN->value);
     }
 }
